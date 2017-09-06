@@ -1,14 +1,14 @@
 //
-//  ViewController.swift
+//  FaceViewController.swift
 //  FaceIt
 //
-//  Created by KimYusung on 9/5/17.
+//  Created by KimYusung on 9/6/17.
 //  Copyright © 2017 yusungkim. All rights reserved.
 //
 
 import UIKit
 
-class ViewController: UIViewController
+class FaceViewController: UIViewController
 {
     @IBOutlet weak var faceView: FaceView! {
         didSet {
@@ -57,7 +57,7 @@ class ViewController: UIViewController
     func decreaseHappiness() {
         expression = expression.sadder
     }
-
+    
     var expression = FacialExpression(eyes: .open, mouth: .grin) {
         didSet {
             updateUI()
