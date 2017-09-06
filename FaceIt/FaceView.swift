@@ -14,16 +14,16 @@ class FaceView: UIView {
     // Public API
     
     @IBInspectable
-    var scale: CGFloat = 0.9
+    var scale: CGFloat = 0.9 { didSet { setNeedsDisplay() } }
     
     @IBInspectable
-    var eyesOpen: Bool = false
+    var eyesOpen: Bool = false { didSet { setNeedsDisplay() } }
     
     @IBInspectable
-    var mouthCurvature: Double = -0.5 // 1.0 is full smile, -1.0 is full frown
+    var mouthCurvature: Double = -0.5 { didSet { setNeedsDisplay() } }// 1.0 is full smile, -1.0 is full frown
     
     @IBInspectable
-    var lineWidth: CGFloat = 5.0
+    var lineWidth: CGFloat = 5.0 { didSet { setNeedsDisplay() } }
     
     @IBInspectable
     var color: UIColor = UIColor.blue
@@ -32,6 +32,7 @@ class FaceView: UIView {
         switch pinchRecognizer.state {
         case .changed, .ended:
             self.scale *= pinchRecognizer.scale
+            //print("scale = \(scale)")
             pinchRecognizer.scale = 1.0
         default:
             break
