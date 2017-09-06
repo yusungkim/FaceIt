@@ -10,7 +10,6 @@ import UIKit
 
 class ViewController: UIViewController
 {
-
     @IBOutlet weak var faceView: FaceView! {
         didSet {
             let handler = #selector(FaceView.changeScale(byReactingTo:))
