@@ -8,7 +8,7 @@
 
 import UIKit
 
-class EmotionsViewController: UIViewController, UISplitViewControllerDelegate {
+class EmotionsViewController: VCLLoggingViewController, UISplitViewControllerDelegate {
 
     // MARK: Navigation
 
@@ -34,7 +34,11 @@ class EmotionsViewController: UIViewController, UISplitViewControllerDelegate {
         "worried" : FacialExpression(eyes: .open, mouth: .smirk)
     ]
     
+    // this is not correct..
     func splitViewController(_ splitViewController: UISplitViewController, collapseSecondary secondaryViewController: UIViewController, onto primaryViewController: UIViewController) -> Bool {
+        if let _ = secondaryViewController.presentingViewController as? FaceViewController {
+            return true
+        }
         return false
     }
 }
