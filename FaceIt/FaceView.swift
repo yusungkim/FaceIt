@@ -10,6 +10,9 @@ import UIKit
 
 @IBDesignable
 class FaceView: UIView {
+    
+    // Public API
+    
     @IBInspectable
     var scale: CGFloat = 0.9
     
@@ -24,6 +27,18 @@ class FaceView: UIView {
     
     @IBInspectable
     var color: UIColor = UIColor.blue
+    
+    func changeScale(byReactingTo pinchRecognizer: UIPinchGestureRecognizer) {
+        switch pinchRecognizer.state {
+        case .changed, .ended:
+            self.scale *= pinchRecognizer.scale
+            pinchRecognizer.scale = 1.0
+        default:
+            break
+        }
+    }
+    
+    // Private Implementation
     
     private var skullRadius: CGFloat {
         return min(bounds.size.width, bounds.size.height) / 2 * scale
