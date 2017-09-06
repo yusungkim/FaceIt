@@ -8,16 +8,23 @@
 
 import UIKit
 
-class EmotionsViewController: UIViewController {
+class EmotionsViewController: UIViewController, UISplitViewControllerDelegate {
 
     // MARK: Navigation
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        let destinationViewController = segue.destination
-        if let faceViewController = destinationViewController as? FaceViewController,
+        var destinationController = segue.destination
+        
+        if let navigationController = destinationController as? UINavigationController {
+            destinationController = navigationController.visibleViewController ?? destinationController
+        }
+        
+        if let faceViewController = destinationController as? FaceViewController,
             let identifier = segue.identifier,
             let expression = emotionalFaces[identifier] {
-                faceViewController.expression = expression
+            faceViewController.expression = expression
+            
+            faceViewController.navigationItem.title = (sender as? UIButton)?.currentTitle
         }
     }
     
@@ -26,4 +33,8 @@ class EmotionsViewController: UIViewController {
         "happy" : FacialExpression(eyes: .open, mouth: .smile),
         "worried" : FacialExpression(eyes: .open, mouth: .smirk)
     ]
+    
+    func splitViewController(_ splitViewController: UISplitViewController, collapseSecondary secondaryViewController: UIViewController, onto primaryViewController: UIViewController) -> Bool {
+        return false
+    }
 }
