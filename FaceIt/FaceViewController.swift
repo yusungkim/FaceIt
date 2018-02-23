@@ -20,21 +20,21 @@ class FaceViewController: VCLLoggingViewController
                 action: handler)
             faceView.addGestureRecognizer(pinchRecognizer)
             
-            let tapRecognizer = UITapGestureRecognizer(
-                target: self,
-                action: #selector(self.toggleEyes(byReactingTo:)))
-            tapRecognizer.numberOfTapsRequired = 1
-            faceView.addGestureRecognizer(tapRecognizer)
+//            let tapRecognizer = UITapGestureRecognizer(
+//                target: self,
+//                action: #selector(self.toggleEyes(byReactingTo:)))
+//            tapRecognizer.numberOfTapsRequired = 1
+//            faceView.addGestureRecognizer(tapRecognizer)
             
             let swipeUpRecognizer = UISwipeGestureRecognizer(
                 target: self,
-                action: #selector(increaseHappiness(byReactingTo:)))
+                action: #selector(self.decreaseHappiness))
             swipeUpRecognizer.direction = .up
             faceView.addGestureRecognizer(swipeUpRecognizer)
             
             let swipeDownRecognizer = UISwipeGestureRecognizer(
                 target: self,
-                action: #selector(self.decreaseHappiness))
+                action: #selector(increaseHappiness(byReactingTo:)))
             swipeDownRecognizer.direction = .down
             faceView.addGestureRecognizer(swipeDownRecognizer)
             
@@ -42,19 +42,46 @@ class FaceViewController: VCLLoggingViewController
         }
     }
     
-    func toggleEyes(byReactingTo tapRecognizer: UITapGestureRecognizer) {
+    @objc func toggleEyes(byReactingTo tapRecognizer: UITapGestureRecognizer) {
         if tapRecognizer.state == .ended {
             let eyes: FacialExpression.Eyes = (expression.eyes == .closed) ? .open : .closed
             expression = FacialExpression(eyes: eyes, mouth: expression.mouth)
         }
     }
     
-    func increaseHappiness(byReactingTo swipeRecognizer: UISwipeGestureRecognizer) {
+    @IBAction func shakeHead(_ sender: UITapGestureRecognizer) {
+        shakeHead()
+    }
+    
+    private struct HeadShake {
+        static let angle = CGFloat.pi/6
+        static let segmentDuration: TimeInterval = 0.5 // each head shake has 3 segments
+    }
+    
+    private func rotateFace(by angle: CGFloat) {
+        faceView.transform = faceView.transform.rotated(by: angle)
+    }
+    
+    private func shakeHead() {
+        UIView.animate(withDuration: HeadShake.segmentDuration,
+                       animations: { self.rotateFace(by: HeadShake.angle) },
+                       completion: { finished in
+                        UIView.animate(withDuration: HeadShake.segmentDuration,
+                                       animations: { self.rotateFace(by: -HeadShake.angle*2) },
+                                       completion: { finished in
+                                        UIView.animate(withDuration: HeadShake.segmentDuration,
+                                                       animations: { self.rotateFace(by: HeadShake.angle) }
+                                        ) }
+                        ) }
+        )
+    }
+    
+    @objc func increaseHappiness(byReactingTo swipeRecognizer: UISwipeGestureRecognizer) {
         if swipeRecognizer.state == .ended {
             expression = expression.happier
         }
     }
-    func decreaseHappiness() {
+    @objc func decreaseHappiness() {
         expression = expression.sadder
     }
     

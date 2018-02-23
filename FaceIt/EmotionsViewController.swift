@@ -34,11 +34,30 @@ class EmotionsViewController: VCLLoggingViewController, UISplitViewControllerDel
         "worried" : FacialExpression(eyes: .open, mouth: .smirk)
     ]
     
-    // this is not correct..
+    // set the splitVC's delegate in the very early stage.
+    // splitViewController? is a point for the splitVC who is pointing me.
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        splitViewController?.delegate = self
+    }
     func splitViewController(_ splitViewController: UISplitViewController, collapseSecondary secondaryViewController: UIViewController, onto primaryViewController: UIViewController) -> Bool {
-        if let _ = secondaryViewController.presentingViewController as? FaceViewController {
-            return true
+        if primaryViewController.contents == self {
+            if let _ = secondaryViewController.contents as? FaceViewController {
+                return true // I(emotionVC) will do the collapse job, but the actual code for collapse is not in me, so it is not going to collapse.
+            }
         }
-        return false
+        return false // You(splitVC) do the collapse job, which means it will collapse as a default in your setting.
+    }
+}
+
+extension UIViewController {
+    var contents: UIViewController? {
+        get {
+            if let navcon = self as? UINavigationController {
+                return navcon.visibleViewController
+            } else {
+                return self
+            }
+        }
     }
 }
